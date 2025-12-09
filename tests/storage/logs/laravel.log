@@ -1,0 +1,26 @@
+[2022-06-24 12:14:14] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (Error(code: 0): Class 'Monolog\\Handler\\RotatingFileHandler' not found at /var/www/html/infinity/source/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:261)
+[stacktrace]
+#0 /var/www/html/infinity/source/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(185): Illuminate\\Log\\LogManager->createDailyDriver()
+#1 /var/www/html/infinity/source/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(109): Illuminate\\Log\\LogManager->resolve()
+#2 /var/www/html/infinity/source/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(97): Illuminate\\Log\\LogManager->get()
+#3 /var/www/html/infinity/source/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(86): Illuminate\\Log\\LogManager->driver()
+#4 /var/www/html/infinity/source/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(224): Illuminate\\Log\\LogManager->channel()
+#5 [internal function]: Illuminate\\Log\\LogManager->Illuminate\\Log\\{closure}()
+#6 /var/www/html/infinity/source/vendor/laravel/framework/src/Illuminate/Support/Collection.php(638): array_map()
+#7 /var/www/html/infinity/source/vendor/laravel/framework/src/Illuminate/Support/Traits/EnumeratesValues.php(285): Illuminate\\Support\\Collection->map()
+#8 /var/www/html/infinity/source/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(225): Illuminate\\Support\\Collection->flatMap()
+#9 /var/www/html/infinity/source/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(185): Illuminate\\Log\\LogManager->createStackDriver()
+#10 /var/www/html/infinity/source/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(109): Illuminate\\Log\\LogManager->resolve()
+#11 /var/www/html/infinity/source/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(97): Illuminate\\Log\\LogManager->get()
+#12 /var/www/html/infinity/source/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(507): Illuminate\\Log\\LogManager->driver()
+#13 /var/www/html/infinity/source/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(118): Illuminate\\Log\\LogManager->error()
+#14 /var/www/html/infinity/source/app/Exceptions/Handler.php(37): Illuminate\\Foundation\\Exceptions\\Handler->report()
+#15 /var/www/html/infinity/source/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(92): App\\Exceptions\\Handler->report()
+#16 /var/www/html/infinity/source/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(134): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->handleException()
+#17 [internal function]: Illuminate\\Foundation\\Bootstrap\\HandleExceptions->handleShutdown()
+#18 {main}
+"} 
+[2022-06-24 12:14:14] local.ERROR: Class Carbon\Carbon contains 1 abstract method and must therefore be declared abstract or implement the remaining methods (Carbon\CarbonInterface::setTestNowAndTimezone) {"exception":"[object] (Symfony\\Component\\Debug\\Exception\\FatalErrorException(code: 1): Class Carbon\\Carbon contains 1 abstract method and must therefore be declared abstract or implement the remaining methods (Carbon\\CarbonInterface::setTestNowAndTimezone) at /var/www/html/infinity/source/vendor/nesbot/carbon/src/Carbon/Carbon.php:510)
+[stacktrace]
+#0 {main}
+"} 
