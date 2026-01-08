@@ -15,4 +15,5 @@ use App\Http\Controllers\Api\ApiController;
 */
 
 
-Route::middleware(['auth:sanctum','activity'])->get('/Reporte/general/tipificaciones',[ ApiController::class, 'ReporteGeneral']);
+Route::middleware(['auth:sanctum','activity'])->post('/Reporte/general/tipificaciones',[ ApiController::class, 'ReporteGeneral']);
+Route::middleware(['auth:sanctum','activity'])->post('/Reporte/clientes',[ ApiController::class, 'ReporteClientes']);
