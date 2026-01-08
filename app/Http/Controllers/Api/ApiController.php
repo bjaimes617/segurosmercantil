@@ -71,18 +71,25 @@ class ApiController extends Controller
     }
 
     ///recursos de acceso a data clientes
-    public function ReporteClientes()
+    public function ReporteClientes(Request $request)
     {
      
      //   try {
+            $data = array();        
+            $init   = Carbon::createFromFormat('Y-m', $request->inicio)->startOfMonth();
+            $finish = Carbon::createFromFormat('Y-m', $request->final)->endOfMonth();
+      
             $data = DB::table('gt_clientes')
              ->leftJoin('estatus', 'gt_clientes.estatus_id', '=', 'estatus.id')
              ->leftJoin('gt_lotes', 'gt_clientes.lote_id', '=', 'gt_lotes.id')
              ->leftJoin('estados', 'gt_clientes.cd_estado_hab', '=', 'estados.id')             
-             ->leftJoin('users', 'gt_clientes.user_id', '=', 'users.id')          
+             ->leftJoin('users', 'gt_clientes.user_id', '=', 'users.id')        
+             ->whereDate('gt_lotes.created_at', '>=', $init->format('Y-m-d'))  
+             ->whereDate('gt_lotes.created_at', '<=', $finish->format('Y-m-d')) 
              ->selectRaw(" DATE_FORMAT(gt_clientes.created_at, '%d/%m/%Y %H:%i:%s') as CLIENTE_REGISTRADO,
              DATE_FORMAT(gt_clientes.updated_at, '%d/%m/%Y %H:%i:%s') as CLIENTE_MODIFICADO,
              DATE_FORMAT(gt_lotes.created_at, '%d/%m/%Y %H:%i:%s') as REGISTRO_DE_LOTE,
+             gt_lotes.archivo as NOMBRE_LOTE,
              gt_clientes.nacionalidad_cliente as NACIONALIDAD_TOMADOR,
              gt_clientes.n_cedula as CEDULA_DEL_TOMADOR,
              gt_clientes.cd_sexo as SEXO_TOMADOR,
@@ -103,7 +110,7 @@ class ApiController extends Controller
              gt_clientes.num_cuenta_asociar_inst_bancario_sinencriptar as NRO_CUENTA,
              gt_clientes.tipo_cuenta_domiciliar as TIPO_CUENTA,
              estatus.descripcion as ESTATUS,
-             users.username as USUARIO")->paginate(300000);
+             users.username as USUARIO")->get();
 
             return response()->json($data,200);
 
