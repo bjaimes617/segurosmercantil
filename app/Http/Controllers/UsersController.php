@@ -263,7 +263,7 @@ class UsersController extends Controller {
                     
             $row["acciones"] = '<form action="'.route('users.tokens.delete',$tokens->id).'" method="POST" id="deleted'.$tokens->id.'">'
                     . '<input type="hidden" name="_method" value="DELETE">'. csrf_field().''
-                    . '<input type="hidden" name="userid" value="'.$request->user.'">'
+                    . '<input type="hidden" name="userid" value="'.$request->user.'">'                    
                     . '<div class="btn-group">'.$deleteHtml.'</div></form>';  
             
             $data[] =$row;
@@ -310,8 +310,8 @@ class UsersController extends Controller {
         //    Session::flash('error', 'La contraseña actual no coincide con la que ingreso, intente de nuevo');
         //    return redirect()->back();
         //}
-        $lastPassword = PasswordUpdate::where('user_id', '=', \Auth::user()->id)->orderBy('id', 'desc')->take(config('app.lastpassword'))->get();
-        if (count($lastPassword) > 0 && \Auth::user()->estatus_id != 3) {
+        $lastPassword = PasswordUpdate::where('user_id', '=',$user->id)->orderBy('id', 'desc')->take(config('app.lastpassword'))->get();
+        if (count($lastPassword) > 0 && $user->estatus_id != 3) {
             foreach ($lastPassword as $pass) {
                 if (\Hash::check($request->newpassword, $pass->password)) {
                     \Session::flash('error', 'La contraseña nueva no puede ser igual a las ultimas tres (03) que utilizaste, intente de nuevo');
@@ -321,11 +321,14 @@ class UsersController extends Controller {
         } else {
             $user->estatus_id = 1;
         }
+      //  dd($request->all(),count($lastPassword) > 0 && $user->estatus_id != 3, count($lastPassword));
         $user->password = $request->newpassword;
         $user->password_updated_at = Carbon::now();
+        $user->estatus_id = 1;
+        
         $pwu = new PasswordUpdate();
         $pwu->password = $user->password;
-        $pwu->user_id = \Auth::user()->id;
+        $pwu->user_id = $user->id;
         $pwu->save();
 
         if ($user->save()) {
@@ -335,6 +338,14 @@ class UsersController extends Controller {
         }
     }
 
+     public function DeleteTokens(Request $request, $id){
+        
+        $user = User::find($request->userid);
+        $user->tokens()->where('id', $id)->delete();
+      
+        return json_encode("Token Eliminado Exitosamente.");
+    }
+    
     public function profile() {
 
         return view('users.profile');

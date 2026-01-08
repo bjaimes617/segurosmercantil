@@ -214,9 +214,7 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <div class="row">
-                                                <div class="col-md-12"><h4> Rol Principal del usuario: <b><span id="RolPrincipal" style="color:red;"></span></b></h4></div>
-                                                <br>
+                                            <div class="row">                                                
                                                 <hr>
                                                 <div class="col-md-12">                                                  
                                                     <table id="TokenListUser" class="table table-sm compact table-bordered table-striped text-center">
@@ -226,9 +224,7 @@
                                                                 <th>Token</th>                                                                                                                                                                                    
                                                                 <th>Acciones</th>                                                                                                                                                                                     
                                                             </tr>
-                                                        </thead>
-                                                        <tbody>                                                       
-                                                        </tbody>
+                                                        </thead>                                                        
                                                     </table>
                                                 </div>
                                             </div>

@@ -1,57 +1,9 @@
 <?php return array (
-  'barryvdh/laravel-debugbar' => 
-  array (
-    'aliases' => 
-    array (
-      'Debugbar' => 'Barryvdh\\Debugbar\\Facades\\Debugbar',
-    ),
-    'providers' => 
-    array (
-      0 => 'Barryvdh\\Debugbar\\ServiceProvider',
-    ),
-  ),
-  'barryvdh/laravel-dompdf' => 
-  array (
-    'aliases' => 
-    array (
-      'PDF' => 'Barryvdh\\DomPDF\\Facade\\Pdf',
-      'Pdf' => 'Barryvdh\\DomPDF\\Facade\\Pdf',
-    ),
-    'providers' => 
-    array (
-      0 => 'Barryvdh\\DomPDF\\ServiceProvider',
-    ),
-  ),
-  'beyondcode/laravel-dump-server' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'BeyondCode\\DumpServer\\DumpServerServiceProvider',
-    ),
-  ),
   'eklundkristoffer/seedster' => 
   array (
     'providers' => 
     array (
       0 => 'Seedster\\SeedsterServiceProvider',
-    ),
-  ),
-  'facade/ignition' => 
-  array (
-    'aliases' => 
-    array (
-      'Flare' => 'Facade\\Ignition\\Facades\\Flare',
-    ),
-    'providers' => 
-    array (
-      0 => 'Facade\\Ignition\\IgnitionServiceProvider',
-    ),
-  ),
-  'fideloper/proxy' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
     ),
   ),
   'fruitcake/laravel-cors' => 
@@ -84,6 +36,20 @@
     'providers' => 
     array (
       0 => 'jeremykenedy\\LaravelRoles\\RolesServiceProvider',
+    ),
+  ),
+  'laravel/breeze' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Breeze\\BreezeServiceProvider',
+    ),
+  ),
+  'laravel/sail' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Sail\\SailServiceProvider',
     ),
   ),
   'laravel/sanctum' => 
@@ -149,6 +115,24 @@
     'providers' => 
     array (
       0 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
+    ),
+  ),
+  'nunomaduro/termwind' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Termwind\\Laravel\\TermwindServiceProvider',
+    ),
+  ),
+  'spatie/laravel-ignition' => 
+  array (
+    'aliases' => 
+    array (
+      'Flare' => 'Spatie\\LaravelIgnition\\Facades\\Flare',
+    ),
+    'providers' => 
+    array (
+      0 => 'Spatie\\LaravelIgnition\\IgnitionServiceProvider',
     ),
   ),
 );

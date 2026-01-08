@@ -265,4 +265,4 @@
 <script src="<?php echo e(asset('plugins/select2/js/select2.js')); ?>"></script>
 <script src="<?php echo e(asset('js/user/users.js')); ?>" type="text/javascript"></script>
 <?php $__env->stopPush(); ?>
-<?php echo $__env->make('layouts.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/segurosmercantil/resources/views/users/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/segurosmercantil8/resources/views/users/index.blade.php ENDPATH**/ ?>

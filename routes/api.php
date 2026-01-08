@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
-
+use App\Http\Controllers\Api\ApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,4 +14,5 @@ use Illuminate\Http\Request;
  * 
 */
 
-Route::middleware(['auth:sanctum','activity'])->post('/Reporte/general/tipificaciones','Api\ApiController@ReporteGeneral');
+
+Route::middleware(['auth:sanctum','activity'])->get('/Reporte/general/tipificaciones',[ ApiController::class, 'ReporteGeneral']);

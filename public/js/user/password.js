@@ -9,8 +9,8 @@ var validation = function () {
     var password = function () {
         $.validator.addMethod("pwcheck", function (value) {
             return /^[A-Za-z0-9\d=!\-@._*]*$/.test(value) // consists of only these
-                    && /[A-Z]/.test(value) // has a lowercase letter
-                    && /\d/.test(value) // has a digit
+                && /[A-Z]/.test(value) // has a lowercase letter
+                && /\d/.test(value) // has a digit
         });
 
         $("#form_update_password").validate({
@@ -22,7 +22,7 @@ var validation = function () {
                     remote: {
                         url: $("#newpassword").data('check'),
                         type: "post",
-                        data: {_token: $("input[name=_token]").val()}
+                        data: { _token: $("input[name=_token]").val() }
                     }
                 },
                 confirmpassword: {
@@ -55,15 +55,15 @@ var validation = function () {
                     error.insertAfter(element);
                 }
             },
-            submitHandler: function (form) {               
-                $("#form_update_password").submit();
+            submitHandler: function (form) {
+                form.submit();
             }
         });
     };
     return {
         // public functions
-        init: function () {           
-            password();            
+        init: function () {
+            password();
         }
     };
 }();
@@ -73,12 +73,12 @@ $(document).ready(function () {
     validation.init();
 });
 
-function waith(){
-    var Toastr = main();    
-        Toastr.fire({
+function waith() {
+    var Toastr = main();
+    Toastr.fire({
         icon: 'info',
         title: "Por favor espere mientras procesamos...",
-      });
+    });
 }
 
 function nobackbutton() {

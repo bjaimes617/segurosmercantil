@@ -177,7 +177,7 @@ class TipificacionesExport implements FromCollection, ShouldAutoSize, WithHeadin
           
           $change->plan         = $change->plan_id != null ? PlanesModel::find($change->plan_id)->codigo : null;
           $change->estatus_id   == 5 ? $change->fecha_solicitud = date('d/m/Y', strtotime($change->created_at)) :  $change->fecha_solicitud = null;
-          $change->suma_asegurada_id != null ?  SumaAseguradaModel::find($change->suma_asegurada_id)->nombre : null;
+          $change->suma_asegurada = $change->suma_asegurada_id != null ?  SumaAseguradaModel::find($change->suma_asegurada_id)->nombre : '';
           
           $change->monto    = $change->monto_a_pagar != null ? $change->monto_a_pagar : null;
           $change->tipif1   = $change->RelationTipiifcacion1->descripcion;
@@ -188,6 +188,7 @@ class TipificacionesExport implements FromCollection, ShouldAutoSize, WithHeadin
           $change->tipif3    = $change->RelationTipificacion3->descripcion;
           }
           $change->estatus  = $change->RelationEstatus->descripcion;
+        
           return $change;
         }, $data);
     }
@@ -258,7 +259,7 @@ class TipificacionesExport implements FromCollection, ShouldAutoSize, WithHeadin
             'CANAL_VENTA'           =>"12",
             'PRODUCTOR'             =>"35000",
             'PROFESION'             =>$data->cd_profesion_ocupacion_cliente,
-            'SUMA_ASEGURADA'        =>$data->suma_asegurada_id,
+            'SUMA_ASEGURADA'        =>strval($data->suma_asegurada),
             'DOMICILIADO'           =>$data->tipo_pago,
             'BANCO'                 =>$data->banco,
             'NRO_CUENTA'            =>$data->cuenta,
