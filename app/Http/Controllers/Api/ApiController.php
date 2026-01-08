@@ -27,45 +27,44 @@ class ApiController extends Controller
        
         $data = array();        
         $init   = Carbon::create($request->inicio);
-        $finish = Carbon::create($request->final);       
-        $sql = ProcesadosModel::with([
-            'RelationVicidial',
-            'RelationCliente',
-            'RelationTipiifcacion1',
-            'RelationTipiifcacion2',
-            'RelationTipificacion3',
-            'RelationEstatus'
-        ])->whereDate('created_at', '>=', $init->format('Y-m-d'))
-        ->whereDate('created_at', '<=', $finish->format('Y-m-d'))
-        ->orderby('created_at','desc');
-        $sql->chunk(50, function ($chunk) use (&$data) {    
-            $row = array();
-            foreach ($chunk as $change) {
-                $row['FECHA']                   = date('d/m/Y', strtotime($change->created_at));
-                $row['HORA']                    = date('H:i:s', strtotime($change->created_at));         
-                $row['LLAMADA']                 = $change->RelationVicidial != null ? $change->RelationVicidial->descripcion : null;
-                $row['CEDULA_DEL_TOMADOR']      = $change->RelationCliente->n_cedula;
-                $row['SEXO_TOMADOR']            = $change->RelationCliente->cd_sexo;
-                $row['EDO_CIVIL_TOMADOR']       = $change->RelationCliente->cd_edo_civil;
-                $row['FECHA_NAC_TOMADOR']       = $change->RelationCliente->fecha_de_nacimiento;                                
-                $row['PRODUCTO']                = $change->plan_id != null ? PlanesModel::find($change->plan_id)->codigo : null;                                
-                $row['SUMA_ASEGURADA']          = $change->suma_asegurada_id != null ? SumaAseguradaModel::find($change->suma_asegurada_id)->nombre : null;
-                $row['DOMICILIADO']             = $change->tipo_pago;
-                $row['BANCO']                   = $change->banco_domiciliado != null ? BancosModel::find($change->banco_domiciliado)->id : null;
-                $row['NRO_CUENTA']              = $change->num_cuenta_asociar_inst_bancario_sinencriptar != null ? strval($change->num_cuenta_asociar_inst_bancario_sinencriptar) : null;
-                $row['TIPIFICACION 1']          = $change->RelationTipiifcacion1->descripcion;
-                $row['TIPIFICACION 2']          = $change->RelationTipiifcacion2->descripcion;
-                $row['TIPIFICACION 3']          = $change->RelationTipiifcacion3 != null ? $change->RelationTipiifcacion3->descripcion : null;
-                $row['USUARIO']                 = $change->user_id;
-                $row['ESTATUS']                 = $change->RelationEstatus->descripcion;
-                $data[] = $row;
-            
-            }
-        });
+        $finish = Carbon::create($request->final);     
+        
+       $data = DB::table('gt_procesados')
+    ->leftJoin('gt_vicialRecords', 'gt_vicialRecords.gt_procesados_id', '=', 'gt_procesados.id')
+    ->leftJoin('gt_clientes', 'gt_procesados.clientes_id', '=', 'gt_clientes.id')
+    ->leftJoin('gt_tipificacion1', 'gt_procesados.gt_tipificacion1_id', '=', 'gt_tipificacion1.id')
+    ->leftJoin('gt_tipificacion2', 'gt_procesados.gt_tipificacion2_id', '=', 'gt_tipificacion2.id')
+    ->leftJoin('gt_tipificacion3', 'gt_procesados.gt_tipificacion3_id', '=', 'gt_tipificacion3.id')
+    ->leftJoin('estatus', 'gt_procesados.estatus_id', '=', 'estatus.id')
+    ->leftJoin('gt_planes', 'gt_procesados.plan_id', '=', 'gt_planes.id')
+    ->leftJoin('gt_suma_asegurada', 'gt_procesados.suma_asegurada_id', '=', 'gt_suma_asegurada.id')
+    ->leftJoin('gt_bancos', 'gt_procesados.banco_domiciliado', '=', 'gt_bancos.id')
+    ->whereDate('gt_procesados.created_at', '>=', $init->format('Y-m-d'))
+    ->whereDate('gt_procesados.created_at', '<=', $finish->format('Y-m-d'))
+    ->orderBy('gt_procesados.created_at', 'desc')
+    ->selectRaw("
+        DATE_FORMAT(gt_procesados.created_at, '%d/%m/%Y') as FECHA,
+        DATE_FORMAT(gt_procesados.created_at, '%H:%i:%s') as HORA,
+        gt_vicialRecords.descripcion as LLAMADA,
+        gt_clientes.n_cedula as CEDULA_DEL_TOMADOR,
+        gt_clientes.cd_sexo as SEXO_TOMADOR,
+        gt_clientes.cd_edo_civil as EDO_CIVIL_TOMADOR,
+        gt_clientes.fecha_de_nacimiento as FECHA_NAC_TOMADOR,
+        gt_planes.codigo as PRODUCTO,
+        gt_suma_asegurada.nombre as SUMA_ASEGURADA,
+        gt_procesados.tipo_pago as DOMICILIADO,
+        gt_bancos.id as BANCO,
+        gt_procesados.num_cuenta_asociar_inst_bancario_sinencriptar as NRO_CUENTA,
+        gt_tipificacion1.descripcion as `TIPIFICACION 1`,
+        gt_tipificacion2.descripcion as `TIPIFICACION 2`,
+        gt_tipificacion3.descripcion as `TIPIFICACION 3`,
+        gt_procesados.user_id as USUARIO,
+        estatus.descripcion as ESTATUS")->get();
+
         return response()->json($data,200);
 
        } catch (\Exception $e){
-            return response()->json($e->getMessage(),500);
+            return response()->json([$e->getMessage()],500);
        }
     }
 
