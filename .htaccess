@@ -1,0 +1,8 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /segurosmercantil/
+
+    # Redirige solo si está en la raíz exacta
+    RewriteCond %{REQUEST_URI} ^/segurosmercantil/?$
+    RewriteRule ^$ public/ [R=301,L]
+</IfModule>
