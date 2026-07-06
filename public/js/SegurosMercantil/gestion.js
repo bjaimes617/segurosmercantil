@@ -500,9 +500,12 @@ function CalculoPrimas(input) {
         dataType: "JSON",
         cache: "false",
         success: function (data) {
-            //console.log(recargo);
             if ([1, 2, 5].includes(recargo)) {
-                var monto = 0.33;
+                if ($("#suma_asegurada" + plan).val() !== "25") {
+                    var monto = 0.33;
+                } else {
+                    var monto = 0;
+                }
             } else {
                 var monto = 0;
             }
@@ -904,7 +907,7 @@ function deletedVentas(id) {
 
 function EditVentas(id) {
     var datos = { _token: $("input[name='_token']").val() };
-    $('#fecha_emision').val($("#editarVentas" + id).data("emision"));
+    $("#fecha_emision").val($("#editarVentas" + id).data("emision"));
     $.ajax({
         url: $("#editarVentas" + id).data("url"),
         method: "POST",

@@ -26,26 +26,26 @@ class FindsController extends Controller
      */
     public function index(Request $request)
     {
-        switch ($request->tipo){
+        switch ($request->tipo) {
             case "estado":
-                $ciudad = CiudadesModel::where('estado_id',$request->estado)->get();
+                $ciudad = CiudadesModel::where('estado_id', $request->estado)->get();
                 return json_encode($ciudad);
                 break;
-             case "ciudad":
-                $municipio = MunicipiosModel::where('estado_id',$request->estado)->where('ciudad_id',$request->ciudad)->get();
+            case "ciudad":
+                $municipio = MunicipiosModel::where('estado_id', $request->estado)->where('ciudad_id', $request->ciudad)->get();
                 return json_encode($municipio);
                 break;
             case "municipio":
-                $parroquia = ParroquiaModel::where('ciudad_id',$request->ciudad)->where('municipio_id',$request->municipio)->get();
+                $parroquia = ParroquiaModel::where('ciudad_id', $request->ciudad)->where('municipio_id', $request->municipio)->get();
                 return json_encode($parroquia);
                 break;
             case "parroquia":
-                
-                $urbanizacion = UrbanizacionModel::where('estado_id',$request->estado)
-                ->where('ciudad_id',$request->ciudad)
-                ->where('municipio_id',$request->municipio)
-                ->where('parroquia_id',$request->parroquia)->get();
-                
+
+                $urbanizacion = UrbanizacionModel::where('estado_id', $request->estado)
+                    ->where('ciudad_id', $request->ciudad)
+                    ->where('municipio_id', $request->municipio)
+                    ->where('parroquia_id', $request->parroquia)->get();
+
                 return json_encode($urbanizacion);
                 break;
         }
@@ -58,9 +58,9 @@ class FindsController extends Controller
      */
     public function Tipificaciones(Request $request)
     {
-        $tipi2 = Tipificacion2Model::select('id','descripcion')->where('gt_tipificacion1_id',$request->tipificacion1)
-        ->where('active',1)->get();
-            
+        $tipi2 = Tipificacion2Model::select('id', 'descripcion')->where('gt_tipificacion1_id', $request->tipificacion1)
+            ->where('active', 1)->get();
+
         return json_encode($tipi2);
     }
 
@@ -71,26 +71,25 @@ class FindsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function CalculoPrimas(Request $request)
-    {    
+    {
         $plan = PlanesModel::find($request->plan);
-       // dd($request->all());
+        //dd($request->all());
         /// validamos si el plan requiere desgloce por rango de edad, en caso contrario, se calculara en funcion a la edad
         if ($plan->required_planes_rango_edad == 1) {
-           
+
             $montos = RangodeEdadModel::where('gt_suma_asegurada_id', $request->sumaasegurada)
-            ->where('minEdad', '<=', (int) $request->campoedad)
-            ->where('maxEdad', '>=', (int) $request->campoedad)->first();
-            
-         //  dd($montos->toSql(),$montos->getBindings(),$montos->first(),$request->sumaasegurada, $request->campoedad);
-        }
-        else {
+                ->where('minEdad', '<=', (int) $request->campoedad)
+                ->where('maxEdad', '>=', (int) $request->campoedad)->first();
+            // dd($montos);
+            //  dd($montos->toSql(),$montos->getBindings(),$montos->first(),$request->sumaasegurada, $request->campoedad);
+        } else {
             $montos = DesglocePorEdadModel::where('gt_suma_asegurada_id', $request->sumaasegurada)
-            ->where('edad',(int) $request->campoedad)->first();
+                ->where('edad', (int) $request->campoedad)->first();
         }
         if ($montos != null) {
             switch ($request->tipodePago) {
                 case "M":
-                    $prima = $montos->prima_mensual != null ? $montos->prima_mensual : "1";
+                    $prima = $montos->prima_mensual != null ? $montos->prima_mensual : "0.0";
                     break;
                 case "S":
                     $prima = $montos->prima_semestral != null ? $montos->prima_semestral : "0.0";
@@ -102,9 +101,8 @@ class FindsController extends Controller
                     $prima = $montos->prima_anual != null ? $montos->prima_anual : "0.0";
                     break;
             }
-        }
-        else {
-            $prima = "1";
+        } else {
+            $prima = "0.0";
         }
 
         return json_decode($prima);
@@ -116,10 +114,7 @@ class FindsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        
-    }
+    public function show($id) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -155,11 +150,12 @@ class FindsController extends Controller
         //
     }
 
-    public function Tipificaciones3(Request $request){
+    public function Tipificaciones3(Request $request)
+    {
 
-         $tipi3 = Tipificacion3Model::select('id','descripcion')->where('gt_tipificacion2_id',$request->tipificacion2)
-         ->where('active',1)->get();
+        $tipi3 = Tipificacion3Model::select('id', 'descripcion')->where('gt_tipificacion2_id', $request->tipificacion2)
+            ->where('active', 1)->get();
 
-         return json_encode($tipi3);
+        return json_encode($tipi3);
     }
 }
