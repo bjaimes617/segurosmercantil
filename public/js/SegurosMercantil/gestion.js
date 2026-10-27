@@ -202,7 +202,7 @@ $(function () {
                 name: "total_procesados_estatus_5",
                 searchable: false,
             },
-            { data: "fecha_emision", name: "p.created_at" },
+            { data: "fecha_emision", name: "fecha_emision" },
         ];
 
         if (esOperador) {
@@ -221,6 +221,7 @@ $(function () {
             processing: true,
             responsive: true,
             serverSide: true,
+            deferRender: true,
             ajax: {
                 url: $("#DataVentas").val(),
                 type: "POST",
@@ -229,8 +230,9 @@ $(function () {
                 },
             },
             columns: columnas,
-            processing: "Cargando...",
-            // Otros textos si quieres
+            language: {
+                processing: "Cargando...",
+            },
         });
     }
 });

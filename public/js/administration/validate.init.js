@@ -28,6 +28,7 @@ $.validator.addMethod(
     function (value, element) {
         $(element).closest(".form-group").addClass("is-invalid");
         var ext = value.split(".").pop();
+        //"xlsx"
         if (!["csv"].includes(ext)) {
             return false;
         } else {

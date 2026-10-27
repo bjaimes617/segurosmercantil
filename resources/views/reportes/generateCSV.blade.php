@@ -41,7 +41,7 @@
                                             <div class="input-group-prepend">  
                                                 <span class="input-group-text" id="basic-addon11"><i class="fa fa-calendar"></i></span>
                                             </div>
-                                            {{ Form::text('rango_fecha',null, ['class' => 'form-control calendartxt','id' => 'rango_fecha','placeholder'=>'DD/MM/YYYY','data-parsley-required-message' => 'Este campo es obligatorio']) }}                                                                   
+                                            {{ Form::text('rango_fecha',null, ['class' => 'form-control calendar','id' => 'rango_fecha','placeholder'=>'DD/MM/YYYY','data-parsley-required-message' => 'Este campo es obligatorio']) }}                                                                   
                                         </div>
                                     </div>
                                 </div>
@@ -89,7 +89,7 @@
                                             <div class="input-group-prepend">  
                                                 <span class="input-group-text" id="basic-addon11"><i class="fa fa-calendar"></i></span>
                                             </div>
-                                            {{ Form::text('rango_fecha',null, ['class' => 'form-control calendartxt','id' => 'rango_fecha','placeholder'=>'DD/MM/YYYY','data-parsley-required-message' => 'Este campo es obligatorio']) }}                                                                   
+                                            {{ Form::text('rango_fecha',null, ['class' => 'form-control calendar','id' => 'rango_fecha','placeholder'=>'DD/MM/YYYY','data-parsley-required-message' => 'Este campo es obligatorio']) }}                                                                   
                                         </div>
                                     </div>
                                 </div>

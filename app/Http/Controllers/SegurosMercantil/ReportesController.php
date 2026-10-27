@@ -151,14 +151,18 @@ class ReportesController extends Controller
     public function StoreCSV(Request $request)
     {
 
-        $init = Carbon::createFromformat('m/d/Y', $request->rango_fecha);
+        $arrayfechas = explode("-", $request->rango_fecha);
+
+        $init = Carbon::createFromformat('m/d/Y', trim($arrayfechas[0]))->startOfDay();
+        $finish = Carbon::createFromformat('m/d/Y', trim($arrayfechas[1]))->endOfDay();
+
 
         $rango_nombre = $init->copy()->format('dmY');
         $tipoarchivo = PlanesModel::find($request->tipo_reporte)->nombre_archivo;
 
-        $data = Cache::remember('Data_polizas_MerSeg' . $tipoarchivo, 60, function () use ($init, $request) {
+        $data = Cache::remember('Data_polizas_MerSeg' . $tipoarchivo, 60, function () use ($init, $finish, $request) {
             return ProcesadosModel::where('estatus_id', 5)->where('plan_id', $request->tipo_reporte)
-                ->whereBetween('created_at', array($init->format('Y-m-d') . " 00:00:01", $init->format('Y-m-d') . " 23:59:59"))->get();
+                ->whereBetween('created_at', array($init->copy()->format('Y-m-d H:i:s'), $finish->copy()->format('Y-m-d H:i:s')))->get();
         });
 
         switch ($request->tipo_reporte) {
@@ -183,10 +187,15 @@ class ReportesController extends Controller
     public function storeClientesCSV(Request $request)
     {
 
-        $init = Carbon::createFromformat('m/d/Y', $request->rango_fecha);
+        $arrayfechas = explode("-", $request->rango_fecha);
+
+        $init = Carbon::createFromformat('m/d/Y', trim($arrayfechas[0]))->startOfDay();
+        $finish = Carbon::createFromformat('m/d/Y', trim($arrayfechas[1]))->endOfDay();
+
+
         $tipoarchivo = $request->tipo_reporte;
         $data = ProcesadosModel::where('estatus_id', 5)
-            ->whereBetween('created_at', array($init->format('Y-m-d') . " 00:00:01", $init->format('Y-m-d') . " 23:59:59"))->groupby('clientes_id')->get();
+            ->whereBetween('created_at', array($init->format('Y-m-d H:i:s'), $finish->format('Y-m-d H:i:s')))->groupby('clientes_id')->get();
 
         switch ($request->tipo_reporte) {
             case "CARGAPNDOMI":

@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Models\SegurosMercantil\ClientesModel;
 use App\Models\SegurosMercantil\LotesModel;
 use App\Imports\SegurosMercantil\ClientesImport;
+use App\Imports\EmergencyChanges;
 use App\Exports\DataClientesProcess;
 
 class AdministrationController extends Controller
@@ -51,7 +52,7 @@ class AdministrationController extends Controller
 
         $identystorage = $this->FileClientesSave($request->archivo);
         Excel::import(new ClientesImport($request->archivo->getClientOriginalName(), $identystorage), request()->file('archivo'));
-
+        // Excel::import(new EmergencyChanges(), request()->file('archivo'));
         return redirect()->back();
     }
 

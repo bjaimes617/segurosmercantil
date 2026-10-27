@@ -466,7 +466,7 @@ class GestionController extends Controller
 
     public function DataTatableVentas()
     {
-        $init = Carbon::now()->subMonth(3)->startOfMonth();
+        $init = Carbon::now()->subMonth(2)->startOfMonth();
         $end = Carbon::now()->endOfMonth();
 
         switch (Auth::user()->hasRole(["operador"])) {
@@ -489,30 +489,20 @@ class GestionController extends Controller
                     ->where('c.estatus_id', 5)
                     ->where('c.user_id', Auth::user()->id)
                     ->whereBetween('p.created_at', [$init, $end])
-                    ->groupBy(
-                        'c.id',
-                        'c.n_cedula',
-                        'c.nomb1',
-                        'c.nomb2',
-                        'c.apelld1',
-                        'c.apelld2',
-                        'c.fecha_de_nacimiento',
-                        'p.clientes_id',
-                        'u.username'
-                    );
-                return DataTables::of($query)
+                    ->groupBy('c.id', 'c.n_cedula', 'c.nomb1', 'c.nomb2', 'c.apelld1', 'c.apelld2', 'c.fecha_de_nacimiento', 'u.username');
 
+                return DataTables::of($query)
                     ->addColumn('nombres', function ($row) {
                         return $row->nomb1 . ' ' . $row->nomb2 . ' ' . $row->apelld1 . ' ' . $row->apelld2;
                     })
                     ->editColumn('fecha_emision', function ($row) {
                         return \Carbon\Carbon::parse($row->fecha_emision)->format('d/m/Y');
                     })
-                    ->editColumn('fecha_nacimiento', function ($row) {
-                        return \Carbon\Carbon::parse($row->fecha_nacimiento)->format('d/m/Y');
+                    ->editColumn('fecha_de_nacimiento', function ($row) {
+                        return \Carbon\Carbon::parse($row->fecha_de_nacimiento)->format('d/m/Y');
                     })
                     ->filterColumn('total_procesados_estatus_5', function ($query, $keyword) {
-                        $query->whereRaw("COUNT(CASE WHEN p.estatus_id = 5 THEN 1 END) LIKE ?", ["%{$keyword}%"]);
+                        $query->havingRaw("COUNT(CASE WHEN p.estatus_id = 5 THEN 1 END) LIKE ?", ["%{$keyword}%"]);
                     })
                     ->make(true);
                 break;
@@ -535,19 +525,9 @@ class GestionController extends Controller
                     ->Join('users as u', 'u.id', '=', 'c.user_id')
                     ->where('c.estatus_id', 5)
                     ->whereBetween('p.created_at', [$init, $end])
-                    ->groupBy(
-                        'c.id',
-                        'c.n_cedula',
-                        'c.nomb1',
-                        'c.nomb2',
-                        'c.apelld1',
-                        'c.apelld2',
-                        'c.fecha_de_nacimiento',
-                        'p.clientes_id',
-                        'u.username'
-                    );
-                return DataTables::of($query)
+                    ->groupBy('c.id', 'c.n_cedula', 'c.nomb1', 'c.nomb2', 'c.apelld1', 'c.apelld2', 'c.fecha_de_nacimiento', 'u.username');
 
+                return DataTables::of($query)
                     ->addColumn('nombres', function ($row) {
                         return $row->nomb1 . ' ' . $row->nomb2 . ' ' . $row->apelld1 . ' ' . $row->apelld2;
                     })
@@ -555,10 +535,10 @@ class GestionController extends Controller
                         $query->whereRaw("COUNT(CASE WHEN p.estatus_id = 5 THEN 1 END) LIKE ?", ["%{$keyword}%"]);
                     })
                     ->editColumn('fecha_emision', function ($row) {
-                        return \Carbon\Carbon::parse($row->fecha_emision)->format('d/m/Y');
+                        return Carbon::parse($row->fecha_emision)->format('d/m/Y');
                     })
                     ->editColumn('fecha_de_nacimiento', function ($row) {
-                        return \Carbon\Carbon::parse($row->fecha_de_nacimiento)->format('d/m/Y');
+                        return Carbon::parse($row->fecha_de_nacimiento)->format('d/m/Y');
                     })
                     ->addColumn('acciones', function ($row) {
                         $buttondelete = '';
@@ -572,6 +552,9 @@ class GestionController extends Controller
 
                         $form = '<div class="btn-group">' . $buttondelete . $buttonedit . '</div>';
                         return $form;
+                    })
+                    ->filterColumn('total_procesados_estatus_5', function ($query, $keyword) {
+                        $query->havingRaw("COUNT(CASE WHEN p.estatus_id = 5 THEN 1 END) LIKE ?", ["%{$keyword}%"]);
                     })
                     ->rawColumns(['acciones'])
                     ->make(true);
