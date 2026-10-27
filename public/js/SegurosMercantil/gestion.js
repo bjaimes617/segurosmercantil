@@ -182,61 +182,6 @@ $(function () {
     }
 });
 
-$(function () {
-    if ($("#datatablesVentasGenerate").length != 0) {
-        let columnas = [
-            { data: "id", name: "c.id" },
-            { data: "n_cedula", name: "c.n_cedula" },
-            {
-                data: "nombres",
-                name: "nombres",
-                orderable: false,
-                searchable: false,
-            },
-            {
-                data: "fecha_de_nacimiento",
-                name: "c.fecha_de_nacimiento",
-            },
-            {
-                data: "total_procesados_estatus_5",
-                name: "total_procesados_estatus_5",
-                searchable: false,
-            },
-            { data: "fecha_emision", name: "fecha_emision" },
-        ];
-
-        if (esOperador) {
-            // Insertamos "username" antes de "fecha_emision"
-            columnas.splice(5, 0, { data: "username", name: "u.username" });
-            // Agregamos "acciones" al final
-            columnas.splice(6, 0, {
-                data: "acciones",
-                name: "acciones",
-                orderable: false,
-                searchable: false,
-            });
-        }
-
-        $("#datatablesVentasGenerate").DataTable({
-            processing: true,
-            responsive: true,
-            serverSide: true,
-            deferRender: true,
-            ajax: {
-                url: $("#DataVentas").val(),
-                type: "POST",
-                data: function (d) {
-                    d._token = $("input[name=_token]").val();
-                },
-            },
-            columns: columnas,
-            language: {
-                processing: "Cargando...",
-            },
-        });
-    }
-});
-
 ///tabla principal de planes
 $(function () {
     if ($("#tableproductos").length != 0) {

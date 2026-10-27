@@ -14,7 +14,7 @@
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
                         <li class="breadcrumb-item">Gestion</li>
-                        <li class="breadcrumb-item active">Agendados</li>
+                        <li class="breadcrumb-item active">Ventas</li>
                     </ol>
                 </div>
             </div>
@@ -28,17 +28,28 @@
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Buscar Clientes con Ventas Generadas</h3>
-                        </div>
-                        <!-- /.card-header -->
-                        <input type="hidden" id="DataVentas" value="{{ route('gestion.obtener.ventas') }}">
-                        @csrf
+                        </div>   
                         <script>
                         var esOperador = @json(!$isOperador); 
                         </script>                          
                         <div class="card-body">                             
-                            <div class="row">    
-                                <div class="col-md-12"  id="displaytable">
-                                    <h6>  Estos resultados son extraidos de forma integra desde la Base de Datos.</h6>    
+                            <div class="row">  
+                                <form id="buscar-cliente-ventas" action="{{ route('gestion.obtener.ventas') }}" method="POST" class="text-sm form-horizontal  form-label-left" data-parsley-validate>
+                                    @csrf
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <span for="cedula_cliente" style="color:red;"> <i class="fas fa-info-circle"></i> Ingrese la cedula de cliente para verificar si tiene ventas generadas</span>
+                                        <div class="input-group">  
+                                            <input type="text" name="cedula_cliente" required class="form-control input-number" id="cedula_cliente" placeholder="123456...">
+                                           <div class="input-group-append">
+                                            <button type="submit" id="buscar_cliente" class="btn btn-primary"><i class="fas fa-search"></i> Buscar</button>
+                                           </div>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </form>
+                                <div class="col-md-12"  id="displaytable" style="display:none;">
+                                    <h6> Se muestran los resultados de las concidencias encontradas.</h6>    
                                     <div class="ln_solid"></div>
                                     <table id="datatablesVentasGenerate" class="table table-sm table-bordered table-hover text-center" width="100%">
                                         <thead>
@@ -46,13 +57,13 @@
                                                 <th>#</th>
                                                 <th>Cedula</th>
                                                 <th>Nombres y Apellidos</th>
-                                                <th>Fecha de Nacimiento</th>    
-                                                <th>Planes Activados</th>
+                                                <th>Fecha de Nacimiento</th> 
+                                                <th>Fecha Emisión</th>    
+                                                <th>Total Productos</th>                        
                                                 @if(!$isOperador) 
                                                 <th>Usuario</th>    
                                                 <th>Acciones</th>    
                                                 @endif
-                                                <th>Fecha Emisión</th>
                                             </tr>
                                         </thead> 
                                         
@@ -210,23 +221,23 @@
 </div>
 @endsection
 @push('styles')
-{!!Html::style('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')!!}
-{!!Html::style('plugins/datatables-responsive/css/responsive.bootstrap4.min.css')!!}
-{!!Html::style('plugins/datatables-buttons/css/buttons.bootstrap4.min.css')!!}
-{!! Html::style('plugins/bootstrap-daterangepicker/daterangepicker.css')!!}
-{!! Html::style('plugins/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css')!!}    
+<link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.css') }}">
+<link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.css') }}">
+<link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.css') }}">
+<link rel="stylesheet" href="{{ asset('plugins/bootstrap-daterangepicker/daterangepicker.css') }}">
+<link rel="stylesheet" href="{{ asset('plugins/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css') }}"></script>    
 @endpush
 
 @push('scripts')   
 <!-- DataTables  & Plugins -->
-{!! Html::script('plugins/moment/moment.min.js') !!}
-{!! Html::script('plugins/bootstrap-daterangepicker/daterangepicker.js')!!}    
-{!! Html::script('plugins/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js')!!}
-{!!Html::script('plugins/datatables/jquery.dataTables.js')!!}
-{!!Html::script('plugins/datatables-bs4/js/dataTables.bootstrap4.js')!!}
-{!!Html::script('plugins/datatables-responsive/js/dataTables.responsive.js')!!}
-{!!Html::script('plugins/datatables-responsive/js/responsive.bootstrap4.js')!!}
-{!!Html::script('plugins/datatables-buttons/js/dataTables.buttons.min.js')!!}
-{!!Html::script('plugins/datatables-buttons/js/buttons.bootstrap4.min.js')!!}
-{!! Html::script('js/SegurosMercantil/gestion.js') !!}
+<script type="text/javascript" src="{{ asset('plugins/moment/moment.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('plugins/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+<script type="text/javascript" src="{{ asset('plugins/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('plugins/datatables/jquery.dataTables.js') }}"></script>
+<script type="text/javascript" src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.js') }}"></script>
+<script type="text/javascript" src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+<script type="text/javascript" src="{{ asset('plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/SegurosMercantil/Validate.init.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/SegurosMercantil/gestion.js') }}"></script>
 @endpush

@@ -464,50 +464,28 @@ class GestionController extends Controller
         ])->render();
     }
 
-    public function DataTatableVentas()
+    public function DataTatableVentas(Request $request)
     {
         $init = Carbon::now()->subMonth(2)->startOfMonth();
         $end = Carbon::now()->endOfMonth();
 
         switch (Auth::user()->hasRole(["operador"])) {
             case true:
-                $query = DB::table('gt_clientes as c')
-                    ->select(
-                        'c.id',
-                        'c.n_cedula',
-                        'c.nomb1',
-                        'c.nomb2',
-                        'c.apelld1',
-                        'c.apelld2',
-                        'c.fecha_de_nacimiento',
-                        'u.username',
-                        DB::raw('MAX(p.created_at) as fecha_emision'),
-                        DB::raw('COUNT(CASE WHEN p.estatus_id = 5 THEN 1 END) as total_procesados_estatus_5'),
-                    )
-                    ->Join('gt_procesados as p', 'p.clientes_id', '=', 'c.id')
-                    ->Join('users as u', 'u.id', '=', 'c.user_id')
-                    ->where('c.estatus_id', 5)
-                    ->where('c.user_id', Auth::user()->id)
-                    ->whereBetween('p.created_at', [$init, $end])
-                    ->groupBy('c.id', 'c.n_cedula', 'c.nomb1', 'c.nomb2', 'c.apelld1', 'c.apelld2', 'c.fecha_de_nacimiento', 'u.username');
-
-                return DataTables::of($query)
-                    ->addColumn('nombres', function ($row) {
-                        return $row->nomb1 . ' ' . $row->nomb2 . ' ' . $row->apelld1 . ' ' . $row->apelld2;
-                    })
-                    ->editColumn('fecha_emision', function ($row) {
-                        return \Carbon\Carbon::parse($row->fecha_emision)->format('d/m/Y');
-                    })
-                    ->editColumn('fecha_de_nacimiento', function ($row) {
-                        return \Carbon\Carbon::parse($row->fecha_de_nacimiento)->format('d/m/Y');
-                    })
-                    ->filterColumn('total_procesados_estatus_5', function ($query, $keyword) {
-                        $query->havingRaw("COUNT(CASE WHEN p.estatus_id = 5 THEN 1 END) LIKE ?", ["%{$keyword}%"]);
-                    })
-                    ->make(true);
+                return [];
                 break;
 
             default:
+                // Subquery: pre-agrega gt_procesados por cliente dentro del rango de fecha
+                $subProcesados = DB::table('gt_procesados')
+                    ->select(
+                        'clientes_id',
+                        DB::raw('MAX(created_at) as fecha_emision'),
+                        DB::raw('COUNT(CASE WHEN estatus_id = 5 THEN 1 END) as total_procesados_estatus_5')
+                    )
+                    ->whereBetween('created_at', [$init, $end])
+                    ->groupBy('clientes_id');
+
+                // Consulta principal: filtra clientes primero, luego joinea con subquery ligera
                 $query = DB::table('gt_clientes as c')
                     ->select(
                         'c.id',
@@ -518,21 +496,22 @@ class GestionController extends Controller
                         'c.apelld2',
                         'c.fecha_de_nacimiento',
                         'u.username',
-                        DB::raw('MAX(p.created_at) as fecha_emision'),
-                        DB::raw('COUNT(CASE WHEN p.estatus_id = 5 THEN 1 END) as total_procesados_estatus_5'),
+                        'p.fecha_emision',
+                        'p.total_procesados_estatus_5'
                     )
-                    ->Join('gt_procesados as p', 'p.clientes_id', '=', 'c.id')
-                    ->Join('users as u', 'u.id', '=', 'c.user_id')
-                    ->where('c.estatus_id', 5)
-                    ->whereBetween('p.created_at', [$init, $end])
-                    ->groupBy('c.id', 'c.n_cedula', 'c.nomb1', 'c.nomb2', 'c.apelld1', 'c.apelld2', 'c.fecha_de_nacimiento', 'u.username');
+                    ->joinSub($subProcesados, 'p', function ($join) {
+                        $join->on('p.clientes_id', '=', 'c.id');
+                    })
+                    ->join('users as u', 'u.id', '=', 'c.user_id')
+                    ->where('c.n_cedula', 'like', $request->cedula_cliente . '%')
+                    ->where('c.estatus_id', 5);
 
                 return DataTables::of($query)
                     ->addColumn('nombres', function ($row) {
                         return $row->nomb1 . ' ' . $row->nomb2 . ' ' . $row->apelld1 . ' ' . $row->apelld2;
                     })
-                    ->filterColumn('total_procesados_estatus_5', function ($query, $keyword) {
-                        $query->whereRaw("COUNT(CASE WHEN p.estatus_id = 5 THEN 1 END) LIKE ?", ["%{$keyword}%"]);
+                    ->filterColumn('c.n_cedula', function ($query, $keyword) {
+                        $query->where("c.n_cedula", "LIKE", "%{$keyword}%");
                     })
                     ->editColumn('fecha_emision', function ($row) {
                         return Carbon::parse($row->fecha_emision)->format('d/m/Y');
@@ -552,9 +531,6 @@ class GestionController extends Controller
 
                         $form = '<div class="btn-group">' . $buttondelete . $buttonedit . '</div>';
                         return $form;
-                    })
-                    ->filterColumn('total_procesados_estatus_5', function ($query, $keyword) {
-                        $query->havingRaw("COUNT(CASE WHEN p.estatus_id = 5 THEN 1 END) LIKE ?", ["%{$keyword}%"]);
                     })
                     ->rawColumns(['acciones'])
                     ->make(true);
